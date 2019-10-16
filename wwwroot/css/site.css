@@ -1,0 +1,248 @@
+﻿body {
+    padding: 0px;
+    margin: 0px;
+    width: 100%;
+    background-color: rgb(220, 220, 220);
+}
+
+/* Footer stílusok */
+footer {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin: auto;
+    width: 100%;
+    background-color: rgb(80, 80, 80);
+    color: white;
+    text-align: center;
+    font-family: 'Lucida Sans Unicode';
+    font-size: 14px;
+}
+
+a.footer-link:link, a.footer-link:visited {
+    color: rgb(180, 180, 180);
+    text-decoration: none;
+}
+
+a.footer-link:hover, a.footer-link:active {
+    color: rgb(0, 255, 255);
+}
+
+/* Navigációs bár stílusok*/
+div.navbar-container {
+    padding: 0px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin: auto;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    font-family: 'Lucida Sans Unicode';
+    text-align: center;
+    background-color: rgb(0, 0, 250);
+    align-content: space-evenly;
+    display: flex;
+}
+
+a.navbar-menuitem:link, a.navbar-menuitem:visited {
+    background-color: rgb(0, 0, 250);
+    color: white;
+    padding: 10px 15px;
+    margin: 0px;
+    border-radius: 20px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    display: inline-flex;
+}
+
+a.navbar-menuitem:hover, a.navbar-menuitem:active {
+    background-color: rgb(0, 130, 250);
+}
+
+a.navbar-img:link, a.navbar-img:visited {
+    background-color: rgb(0, 0, 250);
+    padding: 10px;
+    margin: 0px;
+    border-radius: 20px;
+    display: inline-flex;
+}
+
+a.navbar-img:hover, a.navbar-img:active {
+    background-color: rgb(150, 150, 150);
+}
+
+/* Oldaltartalom stílusai */
+div.body-container {
+    padding: 0px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin: 90px 40px 20px 40px;
+    border-radius: 6px;
+    font-family: 'Lucida Sans Unicode';
+    background-color: white;
+}
+
+div.body-context {
+    padding: 20px 30px;
+    margin: 0px;
+}
+
+div.body-title {
+    margin: 0px;
+    width: 100%;
+    background-color: rgb(0, 130, 250);
+    border-radius: 6px 6px 0px 0px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px black;
+    color: white;
+}
+
+/* Táblázat stílusok */
+table.norm_Table {
+    margin: 5px;
+    padding: 0px;
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+    border: 3px solid black;
+}
+
+th.norm_Head {
+    margin: 0px;
+    padding: 3px;
+    background-color: rgb(150, 150, 150);
+    text-align: center;
+    border: 1px solid black;
+}
+
+td.norm_Cell {
+    margin: 0px;
+    padding: 3px;
+    text-align: center;
+    border: 1px solid black;
+}
+
+/* Linkek oldalhoz tartozó stílusok */
+div.flexbox {
+    padding: 0px;
+    margin: 0px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+div.flexitem {
+    margin: 10px;
+    border: 1px solid rgba(80, 80, 80, 0.25);
+    font-family: 'Lucida Sans Unicode';
+    text-align: center;
+}
+
+div.flexitem:hover, div.flexitem:active {
+    box-shadow: 0 4px 8px 0 rgba(255, 0, 0, 0.2), 0 6px 20px 0 rgba(255, 0, 0, 0.5);
+}
+
+/* Gomb stílusok linkhez */
+a.btn-cancel:link, a.btn-cancel:visited {
+    margin: 0px;
+    padding: 10px 20px;
+    width: 150px;
+    background-color: rgb(156, 11, 0);
+    color: white;
+    border: 2px solid rgb(156, 11, 0);
+    border-radius: 20px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+a.btn-cancel:hover, a.btn-cancel:active {
+    background-color: white;
+    color: black;
+}
+
+/* Beviteli mezőkhöz tartozó stílusok */
+.textbox {
+    padding: 10px;
+    width: 100%;
+    border: 2px solid rgb(150, 150, 150);
+    border-radius: 12px;
+    box-sizing: border-box;
+}
+
+.textbox:focus, .textbox:hover {
+    border: 2px solid black;
+}
+
+.textarea {
+    padding: 10px;
+    width: 100%;
+    height: 200px;
+    border: 2px solid rgb(150, 150, 150);
+    border-radius: 12px;
+    box-sizing: border-box;
+}
+
+.textarea:focus, .textarea:hover {
+    border: 2px solid black;
+}
+
+.labeltext {
+    padding: 4px 7px 2px 10px;
+    font-weight: bold;
+}
+
+.combobox {
+    padding: 10px;
+    width: auto;
+    border: 2px solid rgb(150, 150, 150);
+    border-radius: 12px;
+    box-sizing: border-box;
+}
+
+.combobox:focus, .combobox:hover {
+    border: 2px solid black;
+}
+
+.text-danger {
+    color: red;
+    font-size: 10px;
+}
+
+.btn-submit {
+    padding: 10px 20px;
+    width: 150px;
+    background-color: rgb(11, 156, 0);
+    color: white;
+    border: 2px solid rgb(11, 156, 0);
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.btn-submit:hover {
+    background-color: white;
+    color: black;
+}
+
+.btn-reset {
+    padding: 10px 20px;
+    width: 150px;
+    background-color: rgb(156, 11, 0);
+    color: white;
+    border: 2px solid rgb(156, 11, 0);
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.btn-reset:hover {
+    background-color: white;
+    color: black;
+}
