@@ -1,0 +1,9 @@
+﻿<nav>
+    <div class="navbar-container">
+        @Html.ActionLink("Főoldal", "Index", "Home", null, new { @class = "navbar-menuitem" })
+        @Html.ActionLink("Fuvarok", "Index","Fuvars", null, new { @class = "navbar-menuitem" })
+        @Html.ActionLink("Sofőrök", "Index", "Sofors", null, new { @class = "navbar-menuitem" })
+        @Html.ActionLink("Gépkocsik", "Index", "Gepjarmus", null, new { @class = "navbar-menuitem" })
+        @Html.ActionLink("Kapcsolat", "Contact", "Home", null, new { @class = "navbar-menuitem" })
+    </div>
+</nav>

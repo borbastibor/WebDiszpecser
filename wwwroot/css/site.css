@@ -120,6 +120,7 @@ th.norm_Head {
 td.norm_Cell {
     margin: 0px;
     padding: 3px;
+    font-size: 12px;
     text-align: center;
     border: 1px solid black;
 }

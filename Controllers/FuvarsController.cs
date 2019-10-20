@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -18,10 +19,25 @@ namespace WebDiszpecser.Controllers
         }
 
         // GET: Fuvars
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             var fuvarozasDbContext = _context.Fuvarok.Include(f => f.Gepjarmu).Include(f => f.Sofor);
-            return View(await fuvarozasDbContext.ToListAsync());
+            List<FuvarListViewModel> temp = new List<FuvarListViewModel>();
+            foreach(var item in fuvarozasDbContext)
+            {
+                FuvarListViewModel fuvar = new FuvarListViewModel
+                {
+                    FuvarID = item.FuvarID,
+                    Feladat = item.Feladat,
+                    IndulasIdeje = item.IndulasIdeje.ToString("yyyy-MM-dd"),
+                    BerakoCim = item.BerakoCim,
+                    KirakoCim = item.KirakoCim,
+                    GepjarmuTipus = item.Gepjarmu.Tipus,
+                    SoforNev = item.Sofor.Csaladnev + " " + item.Sofor.Keresztnev
+                };
+                temp.Add(fuvar);
+            }
+            return View(temp);
         }
 
         // GET: Fuvars/Details/5
@@ -47,9 +63,12 @@ namespace WebDiszpecser.Controllers
         // GET: Fuvars/Create
         public IActionResult Create()
         {
-            ViewData["GepjarmuID"] = new SelectList(_context.Gepjarmuvek, "GepjarmuID", "Rendszam");
-            ViewData["SoforID"] = new SelectList(_context.Soforok, "SoforID", "Csaladnev");
-            return View();
+            FuvarCreateViewModel temp = new FuvarCreateViewModel
+            {
+                GepjarmuList = GetGepjarmuvek(),
+                SoforList = GetSoforok()
+            };
+            return View(temp);
         }
 
         // POST: Fuvars/Create
@@ -159,6 +178,44 @@ namespace WebDiszpecser.Controllers
         private bool FuvarExists(int id)
         {
             return _context.Fuvarok.Any(e => e.FuvarID == id);
+        }
+
+        public IEnumerable<SelectListItem> GetGepjarmuvek()
+        {
+            List<SelectListItem> gepjarmuvek = _context.Gepjarmuvek.AsNoTracking()
+                    .OrderBy(n => n.Tipus)
+                        .Select(n =>
+                        new SelectListItem
+                        {
+                            Value = n.GepjarmuID.ToString(),
+                            Text = n.Tipus + " (" + n.Rendszam + ")"
+                        }).ToList();
+            var gepjarmuvektip = new SelectListItem()
+            {
+                Value = null,
+                Text = "--- Válassz gépjárművet ---"
+            };
+            gepjarmuvek.Insert(0, gepjarmuvektip);
+            return new SelectList(gepjarmuvek, "Value", "Text");
+        }
+
+        public IEnumerable<SelectListItem> GetSoforok()
+        {
+            List<SelectListItem> soforok = _context.Soforok.AsNoTracking()
+                    .OrderBy(n => n.Csaladnev)
+                        .Select(n =>
+                        new SelectListItem
+                        {
+                            Value = n.SoforID.ToString(),
+                            Text = n.Csaladnev + " " + n.Keresztnev
+                        }).ToList();
+            var sofortip = new SelectListItem()
+            {
+                Value = null,
+                Text = "--- Válassz sofőrt ---"
+            };
+            soforok.Insert(0, sofortip);
+            return new SelectList(soforok, "Value", "Text").AsEnumerable();
         }
     }
 }
