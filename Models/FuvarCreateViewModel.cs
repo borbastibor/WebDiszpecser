@@ -14,7 +14,7 @@ namespace WebDiszpecser.Models
 
         [Required]
         [DisplayName("Fuvar ideje")]
-        public DateTime IndulasIdeje { get; set; }
+        public string IndulasIdeje { get; set; }
 
         [Required]
         [DisplayName("Berakó címe")]

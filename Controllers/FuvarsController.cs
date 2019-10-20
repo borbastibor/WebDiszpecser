@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -56,8 +57,24 @@ namespace WebDiszpecser.Controllers
             {
                 return NotFound();
             }
+            FuvarDetailsViewModel temp = new FuvarDetailsViewModel
+            {
+                FuvarID = fuvar.FuvarID,
+                Feladat = fuvar.Feladat,
+                IndulasIdeje = fuvar.IndulasIdeje.ToString("yyyy-MM-dd"),
+                BerakoCim = fuvar.BerakoCim,
+                KirakoCim = fuvar.KirakoCim,
+                GjmuTipus = fuvar.Gepjarmu.Tipus + " (" + fuvar.Gepjarmu.Kategoria.ToString() + ")",
+                GjmuRendszam = fuvar.Gepjarmu.Rendszam,
+                GepjarmuID = fuvar.GepjarmuID,
+                SoforNev = fuvar.Sofor.Csaladnev + " " + fuvar.Sofor.Keresztnev,
+                JogositvanySzam = fuvar.Sofor.JogositvanySzam,
+                JogsiErvenyesseg = fuvar.Sofor.Ervenyesseg.ToString("yyyy-MM-dd"),
+                JogsiKategoria = fuvar.Sofor.Kategoria.ToString(),
+                SoforID = fuvar.SoforID
+            };
 
-            return View(fuvar);
+            return View(temp);
         }
 
         // GET: Fuvars/Create
@@ -76,17 +93,22 @@ namespace WebDiszpecser.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FuvarID,Feladat,IndulasIdeje,BerakoCim,KirakoCim,GepjarmuID,SoforID")] Fuvar fuvar)
+        public async Task<IActionResult> Create(FuvarCreateViewModel ujfuvar)
         {
-            if (ModelState.IsValid)
+            Fuvar temp = new Fuvar
             {
-                _context.Add(fuvar);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["GepjarmuID"] = new SelectList(_context.Gepjarmuvek, "GepjarmuID", "Rendszam", fuvar.GepjarmuID);
-            ViewData["SoforID"] = new SelectList(_context.Soforok, "SoforID", "Csaladnev", fuvar.SoforID);
-            return View(fuvar);
+                Feladat = ujfuvar.Feladat,
+                BerakoCim = ujfuvar.BerakoCim,
+                KirakoCim = ujfuvar.KirakoCim,
+                IndulasIdeje = DateTime.Parse(ujfuvar.IndulasIdeje),
+                GepjarmuID = int.Parse(ujfuvar.SelectedGepjarmu),
+                Gepjarmu = _context.Gepjarmuvek.Find(int.Parse(ujfuvar.SelectedGepjarmu)),
+                SoforID = int.Parse(ujfuvar.SelectedSofor),
+                Sofor = _context.Soforok.Find(int.Parse(ujfuvar.SelectedSofor)),
+            };
+            _context.Fuvarok.Add(temp);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Fuvars/Edit/5
@@ -96,15 +118,23 @@ namespace WebDiszpecser.Controllers
             {
                 return NotFound();
             }
-
             var fuvar = await _context.Fuvarok.FindAsync(id);
             if (fuvar == null)
             {
                 return NotFound();
             }
-            ViewData["GepjarmuID"] = new SelectList(_context.Gepjarmuvek, "GepjarmuID", "Rendszam", fuvar.GepjarmuID);
-            ViewData["SoforID"] = new SelectList(_context.Soforok, "SoforID", "Csaladnev", fuvar.SoforID);
-            return View(fuvar);
+            FuvarCreateViewModel temp = new FuvarCreateViewModel
+            {
+                Feladat = fuvar.Feladat,
+                BerakoCim = fuvar.BerakoCim,
+                KirakoCim = fuvar.KirakoCim,
+                IndulasIdeje = fuvar.IndulasIdeje.ToString("yyyy-MM-dd"),
+                SelectedGepjarmu = fuvar.GepjarmuID.ToString(),
+                GepjarmuList = GetGepjarmuvek(),
+                SelectedSofor = fuvar.SoforID.ToString(),
+                SoforList = GetSoforok()
+            };
+            return View(temp);
         }
 
         // POST: Fuvars/Edit/5
@@ -188,7 +218,7 @@ namespace WebDiszpecser.Controllers
                         new SelectListItem
                         {
                             Value = n.GepjarmuID.ToString(),
-                            Text = n.Tipus + " (" + n.Rendszam + ")"
+                            Text = n.Tipus + " (" + n.Rendszam + ") - " + n.Kategoria.ToString()
                         }).ToList();
             var gepjarmuvektip = new SelectListItem()
             {
@@ -207,7 +237,7 @@ namespace WebDiszpecser.Controllers
                         new SelectListItem
                         {
                             Value = n.SoforID.ToString(),
-                            Text = n.Csaladnev + " " + n.Keresztnev
+                            Text = n.Csaladnev + " " + n.Keresztnev + " (" + n.Kategoria.ToString() + ")"
                         }).ToList();
             var sofortip = new SelectListItem()
             {

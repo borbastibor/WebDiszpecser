@@ -1,59 +1,33 @@
-﻿@model WebDiszpecser.Models.Fuvar
-
+﻿@model FuvarCreateViewModel
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Fuvar szerkesztése";
 }
 
-<h1>Edit</h1>
+<div class="body-container">
+    <div class="body-title">@ViewData["Title"]</div>
+    <div class="body-context">
+        @using (Html.BeginForm("Create", "Fuvars", FormMethod.Post))
+        {
+            @Html.LabelFor(model => model.Feladat, new { @class = "labeltext" })<br />
+            @Html.TextBoxFor(model => model.Feladat, new { @class = "textbox", placeholder = "Írja be a Feladatot..." })<br /><br />
 
-<h4>Fuvar</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="FuvarID" />
-            <div class="form-group">
-                <label asp-for="Feladat" class="control-label"></label>
-                <input asp-for="Feladat" class="form-control" />
-                <span asp-validation-for="Feladat" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="IndulasIdeje" class="control-label"></label>
-                <input asp-for="IndulasIdeje" class="form-control" />
-                <span asp-validation-for="IndulasIdeje" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BerakoCim" class="control-label"></label>
-                <input asp-for="BerakoCim" class="form-control" />
-                <span asp-validation-for="BerakoCim" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="KirakoCim" class="control-label"></label>
-                <input asp-for="KirakoCim" class="form-control" />
-                <span asp-validation-for="KirakoCim" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="GepjarmuID" class="control-label"></label>
-                <select asp-for="GepjarmuID" class="form-control" asp-items="ViewBag.GepjarmuID"></select>
-                <span asp-validation-for="GepjarmuID" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SoforID" class="control-label"></label>
-                <select asp-for="SoforID" class="form-control" asp-items="ViewBag.SoforID"></select>
-                <span asp-validation-for="SoforID" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+            @Html.LabelFor(model => model.IndulasIdeje, new { @class = "labeltext" })<br />
+            @Html.TextBoxFor(model => model.IndulasIdeje, new { @type = "date", @class = "textbox" })<br /><br />
+
+            @Html.LabelFor(model => model.BerakoCim, new { @class = "labeltext" })<br />
+            @Html.TextBoxFor(model => model.BerakoCim, new { @class = "textbox", placeholder = "Írja be a berakás címét..." })<br /><br />
+
+            @Html.LabelFor(model => model.KirakoCim, new { @class = "labeltext" })<br />
+            @Html.TextBoxFor(model => model.KirakoCim, new { @class = "textbox", placeholder = "Írja be a kirakás címét..." })<br /><br />
+
+            @Html.LabelFor(model => model.SelectedGepjarmu, new { @class = "labeltext" })<br />
+            @Html.DropDownListFor(model => model.SelectedGepjarmu, new SelectList(Model.GepjarmuList, "Value", "Text"), new { @class = "combobox" })<br /><br />
+
+            @Html.LabelFor(model => model.SelectedSofor, new { @class = "labeltext" })<br />
+            @Html.DropDownListFor(model => model.SelectedSofor, new SelectList(Model.SoforList, "Value", "Text"), new { @class = "combobox" })<br /><br />
+
+            <input type="submit" name="Save" value="Mentés" class="btn-submit" /><br />
+        }
+        <div style="text-align: right;">@Html.ActionLink("Vissza a listához", "Index", "Fuvars")</div>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

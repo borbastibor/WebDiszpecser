@@ -113,6 +113,7 @@ th.norm_Head {
     margin: 0px;
     padding: 3px;
     background-color: rgb(150, 150, 150);
+    color: white;
     text-align: center;
     border: 1px solid black;
 }

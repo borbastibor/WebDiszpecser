@@ -25,7 +25,9 @@
 
             @Html.LabelFor(model => model.SelectedSofor, new { @class = "labeltext" })<br />
             @Html.DropDownListFor(model => model.SelectedSofor, new SelectList(Model.SoforList, "Value", "Text"), new { @class = "combobox" })<br /><br />
+
+            <input type="submit" name="Save" value="Mentés" class="btn-submit" /><br />
         }
-        <div style="text-align: right;">@Html.ActionLink("<= Vissza a listához", "Index", "Fuvars")</div>
+        <div style="text-align: right;">@Html.ActionLink("Vissza a listához", "Index", "Fuvars")</div>
     </div>
 </div>
