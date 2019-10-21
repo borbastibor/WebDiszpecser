@@ -69,7 +69,7 @@
                 @Html.DisplayFor(model => model.JogsiKategoria)
             </dd>
         </dl>
-        @Html.ActionLink("Szerkesztés", "Edit", "Fuvars") |
+        @Html.ActionLink("Szerkesztés", "Edit", "Fuvars", new { @id = Model.FuvarID }) |
         @Html.ActionLink("Vissza a listához", "Index", "Fuvars")
 
     </div>

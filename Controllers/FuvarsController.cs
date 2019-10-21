@@ -22,7 +22,7 @@ namespace WebDiszpecser.Controllers
         // GET: Fuvars
         public IActionResult Index()
         {
-            var fuvarozasDbContext = _context.Fuvarok.Include(f => f.Gepjarmu).Include(f => f.Sofor);
+            var fuvarozasDbContext = _context.Fuvarok.Include(f => f.Gepjarmu).Include(f => f.Sofor).OrderBy(f => f.IndulasIdeje);
             List<FuvarListViewModel> temp = new List<FuvarListViewModel>();
             foreach(var item in fuvarozasDbContext)
             {
@@ -108,7 +108,7 @@ namespace WebDiszpecser.Controllers
             };
             _context.Fuvarok.Add(temp);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Fuvars");
         }
 
         // GET: Fuvars/Edit/5
@@ -142,36 +142,37 @@ namespace WebDiszpecser.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FuvarID,Feladat,IndulasIdeje,BerakoCim,KirakoCim,GepjarmuID,SoforID")] Fuvar fuvar)
+        public async Task<IActionResult> Edit(FuvarCreateViewModel fuvar)
         {
-            if (id != fuvar.FuvarID)
+            Fuvar temp = new Fuvar
             {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
+                FuvarID = fuvar.FuvarID,
+                Feladat = fuvar.Feladat,
+                BerakoCim = fuvar.BerakoCim,
+                KirakoCim = fuvar.KirakoCim,
+                IndulasIdeje = DateTime.Parse(fuvar.IndulasIdeje),
+                GepjarmuID = int.Parse(fuvar.SelectedGepjarmu),
+                //Gepjarmu = _context.Gepjarmuvek.Find(int.Parse(fuvar.SelectedGepjarmu)),
+                SoforID = int.Parse(fuvar.SelectedSofor),
+                //Sofor = _context.Soforok.Find(int.Parse(fuvar.SelectedSofor))
+            };
+            try
             {
-                try
-                {
-                    _context.Update(fuvar);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!FuvarExists(fuvar.FuvarID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Fuvarok.Update(temp);
+                await _context.SaveChangesAsync();
             }
-            ViewData["GepjarmuID"] = new SelectList(_context.Gepjarmuvek, "GepjarmuID", "Rendszam", fuvar.GepjarmuID);
-            ViewData["SoforID"] = new SelectList(_context.Soforok, "SoforID", "Csaladnev", fuvar.SoforID);
-            return View(fuvar);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!FuvarExists(temp.FuvarID))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction("Index", "Fuvars");
         }
 
         // GET: Fuvars/Delete/5

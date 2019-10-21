@@ -13,10 +13,9 @@ namespace WebDiszpecser.Controllers
         public HomeController(FuvarozasDbContext context)
 
         {
-
             _context = context;
-
         }
+
         public IActionResult Index()
         {
             IndexViewModel temp = new IndexViewModel

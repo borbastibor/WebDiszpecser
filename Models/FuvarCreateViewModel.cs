@@ -8,6 +8,8 @@ namespace WebDiszpecser.Models
 {
     public class FuvarCreateViewModel
     {
+        public int FuvarID { get; set; }
+
         [Required]
         [DisplayName("Szállítási feladat")]
         public string Feladat { get; set; }

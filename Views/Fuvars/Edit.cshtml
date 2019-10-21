@@ -6,7 +6,7 @@
 <div class="body-container">
     <div class="body-title">@ViewData["Title"]</div>
     <div class="body-context">
-        @using (Html.BeginForm("Create", "Fuvars", FormMethod.Post))
+        @using (Html.BeginForm("Edit", "Fuvars", FormMethod.Post))
         {
             @Html.LabelFor(model => model.Feladat, new { @class = "labeltext" })<br />
             @Html.TextBoxFor(model => model.Feladat, new { @class = "textbox", placeholder = "Írja be a Feladatot..." })<br /><br />
@@ -25,6 +25,8 @@
 
             @Html.LabelFor(model => model.SelectedSofor, new { @class = "labeltext" })<br />
             @Html.DropDownListFor(model => model.SelectedSofor, new SelectList(Model.SoforList, "Value", "Text"), new { @class = "combobox" })<br /><br />
+
+            @Html.HiddenFor(model => model.FuvarID)
 
             <input type="submit" name="Save" value="Mentés" class="btn-submit" /><br />
         }
