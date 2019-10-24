@@ -93,7 +93,7 @@ namespace WebDiszpecser.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(FuvarCreateViewModel ujfuvar)
+        public IActionResult Create(FuvarCreateViewModel ujfuvar)
         {
             Fuvar temp = new Fuvar
             {
@@ -107,18 +107,14 @@ namespace WebDiszpecser.Controllers
                 Sofor = _context.Soforok.Find(int.Parse(ujfuvar.SelectedSofor)),
             };
             _context.Fuvarok.Add(temp);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
             return RedirectToAction("Index", "Fuvars");
         }
 
         // GET: Fuvars/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var fuvar = await _context.Fuvarok.FindAsync(id);
+            var fuvar = _context.Fuvarok.Find(id);
             if (fuvar == null)
             {
                 return NotFound();
@@ -138,32 +134,32 @@ namespace WebDiszpecser.Controllers
         }
 
         // POST: Fuvars/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(FuvarCreateViewModel fuvar)
+        public IActionResult Edit(FuvarCreateViewModel fuvar)
         {
-            Fuvar temp = new Fuvar
+            var actualfuvar = _context.Fuvarok.Find(fuvar.FuvarID);
+            if (actualfuvar == null)
             {
-                FuvarID = fuvar.FuvarID,
-                Feladat = fuvar.Feladat,
-                BerakoCim = fuvar.BerakoCim,
-                KirakoCim = fuvar.KirakoCim,
-                IndulasIdeje = DateTime.Parse(fuvar.IndulasIdeje),
-                GepjarmuID = int.Parse(fuvar.SelectedGepjarmu),
-                //Gepjarmu = _context.Gepjarmuvek.Find(int.Parse(fuvar.SelectedGepjarmu)),
-                SoforID = int.Parse(fuvar.SelectedSofor),
-                //Sofor = _context.Soforok.Find(int.Parse(fuvar.SelectedSofor))
-            };
+                return NotFound();
+            }
+            //actualfuvar.FuvarID = fuvar.FuvarID;
+            actualfuvar.Feladat = fuvar.Feladat;
+            actualfuvar.BerakoCim = fuvar.BerakoCim;
+            actualfuvar.KirakoCim = fuvar.KirakoCim;
+            actualfuvar.IndulasIdeje = DateTime.Parse(fuvar.IndulasIdeje);
+            actualfuvar.GepjarmuID = int.Parse(fuvar.SelectedGepjarmu);
+            //actualfuvar.Gepjarmu = _context.Gepjarmuvek.Find(int.Parse(fuvar.SelectedGepjarmu));
+            actualfuvar.SoforID = int.Parse(fuvar.SelectedSofor);
+            //actualfuvar.Sofor = _context.Soforok.Find(int.Parse(fuvar.SelectedSofor));
             try
             {
-                _context.Fuvarok.Update(temp);
-                await _context.SaveChangesAsync();
+                //_context.Update(temp);
+                _context.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!FuvarExists(temp.FuvarID))
+                if (!FuvarExists(fuvar.FuvarID))
                 {
                     return NotFound();
                 }
@@ -176,14 +172,14 @@ namespace WebDiszpecser.Controllers
         }
 
         // GET: Fuvars/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var fuvar = await _context.Fuvarok
+            var fuvar = _context.Fuvarok
                 .Include(f => f.Gepjarmu)
                 .Include(f => f.Sofor)
                 .FirstOrDefaultAsync(m => m.FuvarID == id);
@@ -198,11 +194,11 @@ namespace WebDiszpecser.Controllers
         // POST: Fuvars/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            var fuvar = await _context.Fuvarok.FindAsync(id);
+            var fuvar = _context.Fuvarok.Find(id);
             _context.Fuvarok.Remove(fuvar);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
 
