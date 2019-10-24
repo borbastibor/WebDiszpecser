@@ -42,17 +42,17 @@ namespace WebDiszpecser.Controllers
         }
 
         // GET: Fuvars/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var fuvar = await _context.Fuvarok
+            var fuvar = _context.Fuvarok
                 .Include(f => f.Gepjarmu)
                 .Include(f => f.Sofor)
-                .FirstOrDefaultAsync(m => m.FuvarID == id);
+                .FirstOrDefault(m => m.FuvarID == id);
             if (fuvar == null)
             {
                 return NotFound();
@@ -136,30 +136,30 @@ namespace WebDiszpecser.Controllers
         // POST: Fuvars/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(FuvarCreateViewModel fuvar)
+        public IActionResult Edit(int id, [Bind("FuvarID,Feladat,IndulasIdeje,BerakoCim,KirakoCim,SelectedGepjarmu,SelectedSofor")]FuvarCreateViewModel fuvar)
         {
-            var actualfuvar = _context.Fuvarok.Find(fuvar.FuvarID);
+            var actualfuvar = _context.Fuvarok.Find(id);
             if (actualfuvar == null)
             {
                 return NotFound();
             }
-            //actualfuvar.FuvarID = fuvar.FuvarID;
             actualfuvar.Feladat = fuvar.Feladat;
             actualfuvar.BerakoCim = fuvar.BerakoCim;
             actualfuvar.KirakoCim = fuvar.KirakoCim;
             actualfuvar.IndulasIdeje = DateTime.Parse(fuvar.IndulasIdeje);
             actualfuvar.GepjarmuID = int.Parse(fuvar.SelectedGepjarmu);
-            //actualfuvar.Gepjarmu = _context.Gepjarmuvek.Find(int.Parse(fuvar.SelectedGepjarmu));
+            actualfuvar.Gepjarmu = _context.Gepjarmuvek.Find(int.Parse(fuvar.SelectedGepjarmu));
             actualfuvar.SoforID = int.Parse(fuvar.SelectedSofor);
-            //actualfuvar.Sofor = _context.Soforok.Find(int.Parse(fuvar.SelectedSofor));
+            actualfuvar.Sofor = _context.Soforok.Find(int.Parse(fuvar.SelectedSofor));
+
             try
             {
-                //_context.Update(temp);
+                _context.Update(actualfuvar);
                 _context.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!FuvarExists(fuvar.FuvarID))
+                if (!FuvarExists(actualfuvar.FuvarID))
                 {
                     return NotFound();
                 }
@@ -182,13 +182,29 @@ namespace WebDiszpecser.Controllers
             var fuvar = _context.Fuvarok
                 .Include(f => f.Gepjarmu)
                 .Include(f => f.Sofor)
-                .FirstOrDefaultAsync(m => m.FuvarID == id);
+                .FirstOrDefault(m => m.FuvarID == id);
             if (fuvar == null)
             {
                 return NotFound();
             }
+            FuvarDetailsViewModel temp = new FuvarDetailsViewModel
+            {
+                FuvarID = fuvar.FuvarID,
+                Feladat = fuvar.Feladat,
+                IndulasIdeje = fuvar.IndulasIdeje.ToString("yyyy-MM-dd"),
+                BerakoCim = fuvar.BerakoCim,
+                KirakoCim = fuvar.KirakoCim,
+                GjmuTipus = fuvar.Gepjarmu.Tipus + " (" + fuvar.Gepjarmu.Kategoria.ToString() + ")",
+                GjmuRendszam = fuvar.Gepjarmu.Rendszam,
+                GepjarmuID = fuvar.GepjarmuID,
+                SoforNev = fuvar.Sofor.Csaladnev + " " + fuvar.Sofor.Keresztnev,
+                JogositvanySzam = fuvar.Sofor.JogositvanySzam,
+                JogsiErvenyesseg = fuvar.Sofor.Ervenyesseg.ToString("yyyy-MM-dd"),
+                JogsiKategoria = fuvar.Sofor.Kategoria.ToString(),
+                SoforID = fuvar.SoforID
+            };
 
-            return View(fuvar);
+            return View(temp);
         }
 
         // POST: Fuvars/Delete/5
@@ -199,7 +215,7 @@ namespace WebDiszpecser.Controllers
             var fuvar = _context.Fuvarok.Find(id);
             _context.Fuvarok.Remove(fuvar);
             _context.SaveChanges();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Fuvars");
         }
 
         private bool FuvarExists(int id)
@@ -244,5 +260,6 @@ namespace WebDiszpecser.Controllers
             soforok.Insert(0, sofortip);
             return new SelectList(soforok, "Value", "Text").AsEnumerable();
         }
+
     }
 }
