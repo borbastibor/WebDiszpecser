@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebDiszpecser.Data;
@@ -73,15 +72,23 @@ namespace WebDiszpecser.Controllers
             {
                 return NotFound();
             }
-            return View(sofor);
+            SoforCreateViewModel temp = new SoforCreateViewModel
+            {
+                SoforID = sofor.SoforID,
+                Csaladnev = sofor.Csaladnev,
+                Keresztnev = sofor.Keresztnev,
+                SzulIdo = sofor.SzulIdo.ToString("yyyy-MM-dd"),
+                JogositvanySzam = sofor.JogositvanySzam,
+                Ervenyesseg = sofor.Ervenyesseg.ToString("yyyy-MM-dd"),
+                Kategoria = sofor.Kategoria
+            };
+            return View(temp);
         }
 
         // POST: Sofors/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SoforID,Csaladnev,Keresztnev,SzulIdo,JogositvanySzam,Ervenyesseg,Kategoria")] Sofor sofor)
+        public IActionResult Edit(int id, [Bind("SoforID,Csaladnev,Keresztnev,SzulIdo,JogositvanySzam,Ervenyesseg,Kategoria")] Sofor sofor)
         {
             if (id != sofor.SoforID)
             {
@@ -93,7 +100,7 @@ namespace WebDiszpecser.Controllers
                 try
                 {
                     _context.Update(sofor);
-                    await _context.SaveChangesAsync();
+                    _context.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -106,21 +113,21 @@ namespace WebDiszpecser.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Sofors");
             }
             return View(sofor);
         }
 
         // GET: Sofors/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var sofor = await _context.Soforok
-                .FirstOrDefaultAsync(m => m.SoforID == id);
+            var sofor = _context.Soforok
+                .FirstOrDefault(m => m.SoforID == id);
             if (sofor == null)
             {
                 return NotFound();
@@ -132,12 +139,12 @@ namespace WebDiszpecser.Controllers
         // POST: Sofors/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            var sofor = await _context.Soforok.FindAsync(id);
+            var sofor = _context.Soforok.Find(id);
             _context.Soforok.Remove(sofor);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            _context.SaveChanges();
+            return RedirectToAction("Index", "Sofors");
         }
 
         private bool SoforExists(int id)
