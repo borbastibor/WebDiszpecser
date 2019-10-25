@@ -1,58 +1,33 @@
-﻿@model WebDiszpecser.Models.Sofor
-
+﻿@model SoforCreateViewModel
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Új sofőr felvétele";
 }
 
-<h1>Create</h1>
+<div class="body-container">
+    <div class="body-title">@ViewData["Title"]</div>
+    <div class="body-context">
+        @using (Html.BeginForm("Create", "Sofors", FormMethod.Post))
+        {
+            @Html.LabelFor(model => model.Csaladnev, new { @class = "labeltext" })<br />
+            @Html.TextBoxFor(model => model.Csaladnev, new { @class = "textbox", placeholder = "Írja be a családnevet..." })<br /><br />
 
-<h4>Sofor</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Csaladnev" class="control-label"></label>
-                <input asp-for="Csaladnev" class="form-control" />
-                <span asp-validation-for="Csaladnev" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Keresztnev" class="control-label"></label>
-                <input asp-for="Keresztnev" class="form-control" />
-                <span asp-validation-for="Keresztnev" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SzulIdo" class="control-label"></label>
-                <input asp-for="SzulIdo" class="form-control" />
-                <span asp-validation-for="SzulIdo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="JogositvanySzam" class="control-label"></label>
-                <input asp-for="JogositvanySzam" class="form-control" />
-                <span asp-validation-for="JogositvanySzam" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Ervenyesseg" class="control-label"></label>
-                <input asp-for="Ervenyesseg" class="form-control" />
-                <span asp-validation-for="Ervenyesseg" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Kategoria" class="control-label"></label>
-                <select asp-for="Kategoria" class="form-control"></select>
-                <span asp-validation-for="Kategoria" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+            @Html.LabelFor(model => model.Keresztnev, new { @class = "labeltext" })<br />
+            @Html.TextBoxFor(model => model.Keresztnev, new { @class = "textbox", placeholder = "Írja be a keresztnevet..." })<br /><br />
+
+            @Html.LabelFor(model => model.SzulIdo, new { @class = "labeltext" })<br />
+            @Html.TextBoxFor(model => model.SzulIdo, new { @type = "date", @class = "textbox" })<br /><br />
+
+            @Html.LabelFor(model => model.JogositvanySzam, new { @class = "labeltext" })<br />
+            @Html.TextBoxFor(model => model.JogositvanySzam, new { @class = "textbox", placeholder = "Írja be a jogosítvány számát..." })<br /><br />
+
+            @Html.LabelFor(model => model.Ervenyesseg, new { @class = "labeltext" })<br />
+            @Html.TextBoxFor(model => model.Ervenyesseg, new { @type="date", @class = "textbox" })<br /><br />
+
+            @Html.LabelFor(model => model.Kategoria, new { @class = "labeltext" })<br />
+            @Html.DropDownListFor(model => model.Kategoria, Html.GetEnumSelectList<Kategoria>(), new { @class = "combobox" })<br /><br />
+
+            <input type="submit" name="Save" value="Mentés" class="btn-submit" /><br />
+        }
+        <div style="text-align: right;">@Html.ActionLink("Vissza a listához", "Index", "Sofors")</div>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

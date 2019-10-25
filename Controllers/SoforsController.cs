@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,60 +18,57 @@ namespace WebDiszpecser.Controllers
         }
 
         // GET: Sofors
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Soforok.ToListAsync());
-        }
-
-        // GET: Sofors/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
+            var soforDbContext = _context.Soforok.OrderBy(f => f.Csaladnev);
+            List<SoforListViewModel> temp = new List<SoforListViewModel>();
+            foreach (var item in soforDbContext)
             {
-                return NotFound();
+                SoforListViewModel sofor = new SoforListViewModel
+                {
+                    SoforID = item.SoforID,
+                    Csaladnev = item.Csaladnev,
+                    Keresztnev = item.Keresztnev,
+                    SzulIdo = item.SzulIdo.ToString("yyyy-MM-dd"),
+                    JogositvanySzam = item.JogositvanySzam,
+                    Ervenyesseg = item.Ervenyesseg.ToString("yyyy-MM-dd"),
+                    Kategoria = item.Kategoria
+                };
+                temp.Add(sofor);
             }
-
-            var sofor = await _context.Soforok
-                .FirstOrDefaultAsync(m => m.SoforID == id);
-            if (sofor == null)
-            {
-                return NotFound();
-            }
-
-            return View(sofor);
+            return View(temp);
         }
 
         // GET: Sofors/Create
         public IActionResult Create()
         {
-            return View();
+            SoforCreateViewModel temp = new SoforCreateViewModel();
+            return View(temp);
         }
 
         // POST: Sofors/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SoforID,Csaladnev,Keresztnev,SzulIdo,JogositvanySzam,Ervenyesseg,Kategoria")] Sofor sofor)
+        public IActionResult Create([Bind("SoforID,Csaladnev,Keresztnev,SzulIdo,JogositvanySzam,Ervenyesseg,Kategoria")] Sofor sofor)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(sofor);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                _context.SaveChanges();
+                return RedirectToAction("Index", "Sofors");
             }
             return View(sofor);
         }
 
         // GET: Sofors/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var sofor = await _context.Soforok.FindAsync(id);
+            var sofor = _context.Soforok.Find(id);
             if (sofor == null)
             {
                 return NotFound();

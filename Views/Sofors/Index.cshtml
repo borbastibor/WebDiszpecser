@@ -1,65 +1,65 @@
-﻿@model IEnumerable<WebDiszpecser.Models.Sofor>
-
+﻿@model IEnumerable<SoforListViewModel>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Sofőrök";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Csaladnev)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Keresztnev)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SzulIdo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.JogositvanySzam)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Ervenyesseg)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Kategoria)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Csaladnev)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Keresztnev)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SzulIdo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.JogositvanySzam)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Ervenyesseg)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Kategoria)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.SoforID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.SoforID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.SoforID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="body-container">
+    <div class="body-title">@ViewData["Title"]</div>
+    <div class="body-context">
+        <p>@Html.ActionLink("Új sofőr felvétele", "Create", "Sofors")</p>
+        <table class="norm_Table">
+            <thead>
+                <tr>
+                    <th class="norm_Head">
+                        @Html.DisplayNameFor(model => model.Csaladnev)
+                    </th>
+                    <th class="norm_Head">
+                        @Html.DisplayNameFor(model => model.Keresztnev)
+                    </th>
+                    <th class="norm_Head">
+                        @Html.DisplayNameFor(model => model.SzulIdo)
+                    </th>
+                    <th class="norm_Head">
+                        @Html.DisplayNameFor(model => model.JogositvanySzam)
+                    </th>
+                    <th class="norm_Head">
+                        @Html.DisplayNameFor(model => model.Ervenyesseg)
+                    </th>
+                    <th class="norm_Head">
+                        @Html.DisplayNameFor(model => model.Kategoria)
+                    </th>
+                    <th class="norm_Head">Lehetőségek</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="norm_Cell">
+                            @Html.DisplayFor(modelItem => item.Csaladnev)
+                        </td>
+                        <td class="norm_Cell">
+                            @Html.DisplayFor(modelItem => item.Keresztnev)
+                        </td>
+                        <td class="norm_Cell">
+                            @Html.DisplayFor(modelItem => item.SzulIdo)
+                        </td>
+                        <td class="norm_Cell">
+                            @Html.DisplayFor(modelItem => item.JogositvanySzam)
+                        </td>
+                        <td class="norm_Cell">
+                            @Html.DisplayFor(modelItem => item.Ervenyesseg)
+                        </td>
+                        <td class="norm_Cell">
+                            @Html.DisplayFor(modelItem => item.Kategoria)
+                        </td>
+                        <td class="norm_Cell">
+                            @Html.ActionLink("Szerkeszt", "Edit", "Sofors", new { @id = @item.SoforID }) |
+                            @Html.ActionLink("Törlés", "Delete", "Sofors", new { @id = item.SoforID })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
