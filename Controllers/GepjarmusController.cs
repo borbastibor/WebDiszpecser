@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -81,41 +82,53 @@ namespace WebDiszpecser.Controllers
         // POST: Gepjarmus/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("GepjarmuID,Tipus,Rendszam,FutottKm,SzervizCiklus,UtolsoSzerviz,Kategoria,TelephelyID")] Gepjarmu gepjarmu)
+        public IActionResult Create(GepjarmuCreateViewModel gepjarmu)
         {
-            if (ModelState.IsValid)
+            Gepjarmu temp = new Gepjarmu
             {
-                _context.Add(gepjarmu);
-                _context.SaveChanges();
-                return RedirectToAction("Index", "Gepjarmus");
-            }
-            return View(gepjarmu);
+                Tipus = gepjarmu.Tipus,
+                Rendszam = gepjarmu.Rendszam,
+                FutottKm = gepjarmu.FutottKm,
+                Kategoria = gepjarmu.Kategoria,
+                SzervizCiklus = gepjarmu.SzervizCiklus,
+                UtolsoSzerviz = DateTime.Parse(gepjarmu.UtolsoSzerviz),
+                TelephelyID = int.Parse(gepjarmu.SelectedTelephelyCim),
+                Telephely = _context.Telephelyek.Find(int.Parse(gepjarmu.SelectedTelephelyCim))
+            };
+            _context.Gepjarmuvek.Add(temp);
+            _context.SaveChanges();
+            return RedirectToAction("Index", "Gepjarmus");
         }
 
         // GET: Gepjarmus/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var gepjarmu = await _context.Gepjarmuvek.FindAsync(id);
+        public IActionResult Edit(int? id)
+        {           
+            var gepjarmu = _context.Gepjarmuvek.Find(id);
             if (gepjarmu == null)
             {
                 return NotFound();
             }
-            ViewData["TelephelyID"] = new SelectList(_context.Telephelyek, "TelephelyID", "TelephelyCim", gepjarmu.TelephelyID);
-            return View(gepjarmu);
+
+            GepjarmuCreateViewModel temp = new GepjarmuCreateViewModel
+            {
+                Tipus = gepjarmu.Tipus,
+                Rendszam = gepjarmu.Rendszam,
+                FutottKm = gepjarmu.FutottKm,
+                Kategoria = gepjarmu.Kategoria,
+                SzervizCiklus = gepjarmu.SzervizCiklus,
+                UtolsoSzerviz = gepjarmu.UtolsoSzerviz.ToString("yyyy-MM-dd"),
+                SelectedTelephelyCim = gepjarmu.Telephely.TelephelyID.ToString(),
+                Telephelyek = GetTelephelyek()
+            };
+            return View(temp);
         }
 
         // POST: Gepjarmus/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("GepjarmuID,Tipus,Rendszam,FutottKm,SzervizCiklus,UtolsoSzerviz,Kategoria,TelephelyID")] Gepjarmu gepjarmu)
         {
+            //TODO
             if (id != gepjarmu.GepjarmuID)
             {
                 return NotFound();

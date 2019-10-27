@@ -103,7 +103,7 @@ namespace WebDiszpecser.Controllers
                 GepjarmuID = int.Parse(ujfuvar.SelectedGepjarmu),
                 Gepjarmu = _context.Gepjarmuvek.Find(int.Parse(ujfuvar.SelectedGepjarmu)),
                 SoforID = int.Parse(ujfuvar.SelectedSofor),
-                Sofor = _context.Soforok.Find(int.Parse(ujfuvar.SelectedSofor)),
+                Sofor = _context.Soforok.Find(int.Parse(ujfuvar.SelectedSofor))
             };
             _context.Fuvarok.Add(temp);
             _context.SaveChanges();
