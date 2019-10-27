@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -18,29 +19,53 @@ namespace WebDiszpecser.Controllers
         }
 
         // GET: Gepjarmus
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var fuvarozasDbContext = _context.Gepjarmuvek.Include(g => g.Telephely);
-            return View(await fuvarozasDbContext.ToListAsync());
+            var gepjarmuDbContext = _context.Gepjarmuvek.Include(g => g.Telephely);
+            List<GepjarmuListViewModel> temp = new List<GepjarmuListViewModel>();
+            foreach(var item in gepjarmuDbContext)
+            {
+                GepjarmuListViewModel gjmu = new GepjarmuListViewModel
+                {
+                    GepjarmuID = item.GepjarmuID,
+                    Rendszam = item.Rendszam,
+                    FutottKm = item.FutottKm,
+                    Tipus = item.Tipus,
+                    Kategoria = item.Kategoria,
+                    TelephelyCim = item.Telephely.TelephelyCim
+                };
+                temp.Add(gjmu);
+            }
+            return View(temp);
         }
 
         // GET: Gepjarmus/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var gepjarmu = await _context.Gepjarmuvek
+            var gepjarmu = _context.Gepjarmuvek
                 .Include(g => g.Telephely)
-                .FirstOrDefaultAsync(m => m.GepjarmuID == id);
+                .FirstOrDefault(m => m.GepjarmuID == id);
             if (gepjarmu == null)
             {
                 return NotFound();
             }
-
-            return View(gepjarmu);
+            GepjarmuDetailsViewModel temp = new GepjarmuDetailsViewModel
+            {
+                GepjarmuID = gepjarmu.GepjarmuID,
+                Rendszam = gepjarmu.Rendszam,
+                FutottKm = gepjarmu.FutottKm,
+                Tipus = gepjarmu.Tipus,
+                Kategoria = gepjarmu.Kategoria,
+                SzervizCiklus = gepjarmu.SzervizCiklus,
+                UtolsoSzerviz = gepjarmu.UtolsoSzerviz.ToString("yyyy-MM-dd"),
+                TelephelyCim = gepjarmu.Telephely.TelephelyCim
+            };
+            return View(temp);
         }
 
         // GET: Gepjarmus/Create
@@ -51,8 +76,6 @@ namespace WebDiszpecser.Controllers
         }
 
         // POST: Gepjarmus/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("GepjarmuID,Tipus,Rendszam,FutottKm,SzervizCiklus,UtolsoSzerviz,Kategoria,TelephelyID")] Gepjarmu gepjarmu)
