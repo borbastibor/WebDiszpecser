@@ -222,7 +222,7 @@ namespace WebDiszpecser.Controllers
             return _context.Fuvarok.Any(e => e.FuvarID == id);
         }
 
-        public IEnumerable<SelectListItem> GetGepjarmuvek()
+        private IEnumerable<SelectListItem> GetGepjarmuvek()
         {
             List<SelectListItem> gepjarmuvek = _context.Gepjarmuvek.AsNoTracking()
                     .OrderBy(n => n.Tipus)
@@ -241,7 +241,7 @@ namespace WebDiszpecser.Controllers
             return new SelectList(gepjarmuvek, "Value", "Text");
         }
 
-        public IEnumerable<SelectListItem> GetSoforok()
+        private IEnumerable<SelectListItem> GetSoforok()
         {
             List<SelectListItem> soforok = _context.Soforok.AsNoTracking()
                     .OrderBy(n => n.Csaladnev)
