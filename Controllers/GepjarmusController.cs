@@ -102,7 +102,12 @@ namespace WebDiszpecser.Controllers
 
         // GET: Gepjarmus/Edit/5
         public IActionResult Edit(int? id)
-        {           
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
             var gepjarmu = _context.Gepjarmuvek.Find(id);
             if (gepjarmu == null)
             {
@@ -111,6 +116,7 @@ namespace WebDiszpecser.Controllers
 
             GepjarmuCreateViewModel temp = new GepjarmuCreateViewModel
             {
+                GepjarmuID = gepjarmu.GepjarmuID,
                 Tipus = gepjarmu.Tipus,
                 Rendszam = gepjarmu.Rendszam,
                 FutottKm = gepjarmu.FutottKm,
@@ -126,20 +132,27 @@ namespace WebDiszpecser.Controllers
         // POST: Gepjarmus/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("GepjarmuID,Tipus,Rendszam,FutottKm,SzervizCiklus,UtolsoSzerviz,Kategoria,TelephelyID")] Gepjarmu gepjarmu)
+        public IActionResult Edit(int id, [Bind("GepjarmuID,Tipus,Rendszam,FutottKm,SzervizCiklus,UtolsoSzerviz,Kategoria,TelephelyID")] GepjarmuCreateViewModel gepjarmu)
         {
-            //TODO
             if (id != gepjarmu.GepjarmuID)
             {
                 return NotFound();
             }
-
+            Gepjarmu temp = new Gepjarmu();
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(gepjarmu);
-                    await _context.SaveChangesAsync();
+                    temp.Tipus = gepjarmu.Tipus;
+                    temp.Rendszam = gepjarmu.Rendszam;
+                    temp.Kategoria = gepjarmu.Kategoria;
+                    temp.FutottKm = gepjarmu.FutottKm;
+                    temp.UtolsoSzerviz = DateTime.Parse(gepjarmu.UtolsoSzerviz);
+                    temp.SzervizCiklus = gepjarmu.SzervizCiklus;
+                    temp.TelephelyID = int.Parse(gepjarmu.SelectedTelephelyCim);
+                    temp.Telephely = _context.Telephelyek.Find(int.Parse(gepjarmu.SelectedTelephelyCim));
+                    _context.Update(temp);
+                    _context.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -152,10 +165,8 @@ namespace WebDiszpecser.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["TelephelyID"] = new SelectList(_context.Telephelyek, "TelephelyID", "TelephelyCim", gepjarmu.TelephelyID);
-            return View(gepjarmu);
+            return RedirectToAction("Index", "Gepjarmus");
         }
 
         // GET: Gepjarmus/Delete/5
