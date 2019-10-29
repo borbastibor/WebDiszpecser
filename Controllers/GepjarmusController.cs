@@ -101,9 +101,9 @@ namespace WebDiszpecser.Controllers
         }
 
         // GET: Gepjarmus/Edit/5
-        public IActionResult Edit(int? id)
+        public IActionResult Edit(int id)
         {
-            if (id == null)
+            if (GepjarmuExists(id))
             {
                 return NotFound();
             }
