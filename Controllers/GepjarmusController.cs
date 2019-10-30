@@ -101,14 +101,14 @@ namespace WebDiszpecser.Controllers
         }
 
         // GET: Gepjarmus/Edit/5
-        public IActionResult Edit(int id)
+        public IActionResult Edit(int? id)
         {
-            if (GepjarmuExists(id))
+            if (id == null)
             {
                 return NotFound();
             }
-
-            var gepjarmu = _context.Gepjarmuvek.Find(id);
+            var gepjarmu = _context.Gepjarmuvek.Include(t => t.Telephely)
+                .FirstOrDefault(g => g.GepjarmuID == id);
             if (gepjarmu == null)
             {
                 return NotFound();
@@ -132,71 +132,79 @@ namespace WebDiszpecser.Controllers
         // POST: Gepjarmus/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("GepjarmuID,Tipus,Rendszam,FutottKm,SzervizCiklus,UtolsoSzerviz,Kategoria,TelephelyID")] GepjarmuCreateViewModel gepjarmu)
+        public IActionResult Edit(int id, [Bind("GepjarmuID,Tipus,Rendszam,FutottKm,SzervizCiklus,UtolsoSzerviz,Kategoria,SelectedTelephelyCim")] GepjarmuCreateViewModel gepjarmu)
         {
-            if (id != gepjarmu.GepjarmuID)
+            var temp = _context.Gepjarmuvek.Find(id);
+            if (temp == null)
             {
                 return NotFound();
             }
-            Gepjarmu temp = new Gepjarmu();
-            if (ModelState.IsValid)
+            temp.Tipus = gepjarmu.Tipus;
+            temp.Rendszam = gepjarmu.Rendszam;
+            temp.Kategoria = gepjarmu.Kategoria;
+            temp.FutottKm = gepjarmu.FutottKm;
+            temp.UtolsoSzerviz = DateTime.Parse(gepjarmu.UtolsoSzerviz);
+            temp.SzervizCiklus = gepjarmu.SzervizCiklus;
+            temp.TelephelyID = int.Parse(gepjarmu.SelectedTelephelyCim);
+            temp.Telephely = _context.Telephelyek.Find(int.Parse(gepjarmu.SelectedTelephelyCim));
+            try
             {
-                try
+                _context.Update(temp);
+                _context.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!GepjarmuExists(gepjarmu.GepjarmuID))
                 {
-                    temp.Tipus = gepjarmu.Tipus;
-                    temp.Rendszam = gepjarmu.Rendszam;
-                    temp.Kategoria = gepjarmu.Kategoria;
-                    temp.FutottKm = gepjarmu.FutottKm;
-                    temp.UtolsoSzerviz = DateTime.Parse(gepjarmu.UtolsoSzerviz);
-                    temp.SzervizCiklus = gepjarmu.SzervizCiklus;
-                    temp.TelephelyID = int.Parse(gepjarmu.SelectedTelephelyCim);
-                    temp.Telephely = _context.Telephelyek.Find(int.Parse(gepjarmu.SelectedTelephelyCim));
-                    _context.Update(temp);
-                    _context.SaveChanges();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!GepjarmuExists(gepjarmu.GepjarmuID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
             }
             return RedirectToAction("Index", "Gepjarmus");
         }
 
         // GET: Gepjarmus/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var gepjarmu = await _context.Gepjarmuvek
-                .Include(g => g.Telephely)
-                .FirstOrDefaultAsync(m => m.GepjarmuID == id);
+            var gepjarmu = _context.Gepjarmuvek
+                .Include(f => f.Telephely)
+                .FirstOrDefault(m => m.GepjarmuID == id);
             if (gepjarmu == null)
             {
                 return NotFound();
             }
+            GepjarmuDetailsViewModel temp = new GepjarmuDetailsViewModel
+            {
+                GepjarmuID = gepjarmu.GepjarmuID,
+                Rendszam = gepjarmu.Rendszam,
+                FutottKm = gepjarmu.FutottKm,
+                Tipus = gepjarmu.Tipus,
+                Kategoria = gepjarmu.Kategoria,
+                SzervizCiklus = gepjarmu.SzervizCiklus,
+                UtolsoSzerviz = gepjarmu.UtolsoSzerviz.ToString("yyyy-MM-dd"),
+                TelephelyCim = gepjarmu.Telephely.TelephelyCim
+            };
 
-            return View(gepjarmu);
+            return View(temp);
         }
 
         // POST: Gepjarmus/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            var gepjarmu = await _context.Gepjarmuvek.FindAsync(id);
+            var gepjarmu = _context.Gepjarmuvek.Find(id);
             _context.Gepjarmuvek.Remove(gepjarmu);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            _context.SaveChanges();
+            return RedirectToAction("Index", "Gepjarmus");
         }
 
         private bool GepjarmuExists(int id)
