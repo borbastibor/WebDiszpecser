@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace WebDiszpecser.Models
 {
@@ -16,6 +13,8 @@ namespace WebDiszpecser.Models
         [DisplayName("Gépjármű típusa")]
         public string Tipus { get; set; }
 
+        [RegularExpression(@"^[A-Za-z]+[A-Za-z]+[A-Za-z]+[0-9]+[0-9]+[0-9]$")]
+        [StringLength(5)]
         [Required]
         [DisplayName("Gépjármű rendszáma")]
         public string Rendszam { get; set; }

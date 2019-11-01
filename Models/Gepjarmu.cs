@@ -15,6 +15,7 @@ namespace WebDiszpecser.Models
         public string Tipus { get; set; }
 
         [Required]
+        [StringLength(6)]
         public string Rendszam { get; set; }
 
         [Required]
