@@ -13,7 +13,7 @@ namespace WebDiszpecser.Models
         [DisplayName("Gépjármű típusa")]
         public string Tipus { get; set; }
 
-        [RegularExpression(@"^[A-Za-z]+[A-Za-z]+[A-Za-z]+[0-9]+[0-9]+[0-9]$")]
+        [RegularExpression(@"^([A-Z]{3})(\d{3})$")]
         [StringLength(5)]
         [Required]
         [DisplayName("Gépjármű rendszáma")]
@@ -24,7 +24,7 @@ namespace WebDiszpecser.Models
         public int FutottKm { get; set; }
 
         [Required]
-        [DisplayName("Gépjármű szervízciklusa")]
+        [DisplayName("Gépjármű szervízciklusa (km)")]
         public int SzervizCiklus { get; set; }
 
         [Required]
