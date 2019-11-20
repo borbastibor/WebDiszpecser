@@ -8,33 +8,28 @@
     <div class="body-context">
         @using (Html.BeginForm("Create", "Gepjarmus", FormMethod.Post))
         {
+            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
             @Html.LabelFor(model => model.Tipus, new { @class = "labeltext" })<br />
-            @Html.TextBoxFor(model => model.Tipus, new { @class = "textbox", placeholder = "Írja be a típust..." })
-            @Html.ValidationMessageFor(model => model.Tipus, "", new { @class = "text-danger" })<br /><br />
+            @Html.TextBoxFor(model => model.Tipus, new { @class = "textbox", placeholder = "Írja be a típust..." })<br /><br />
 
             @Html.LabelFor(model => model.Rendszam, new { @class = "labeltext" })<br />
-            @Html.TextBoxFor(model => model.Rendszam, new { @class = "textbox", placeholder = "Írja be a rendszámot..." })
-            @Html.ValidationMessageFor(model => model.Rendszam, "", new { @class = "text-danger" })<br /><br />
+            @Html.TextBoxFor(model => model.Rendszam, new { @class = "textbox", placeholder = "Írja be a rendszámot..." })<br /><br />
 
             @Html.LabelFor(model => model.Kategoria, new { @class = "labeltext" })<br />
-            @Html.DropDownListFor(model => model.Kategoria, Html.GetEnumSelectList<Kategoria>(), new { @class = "combobox" })
-            @Html.ValidationMessageFor(model => model.Kategoria, "", new { @class = "text-danger" })<br /><br />
+            @Html.DropDownListFor(model => model.Kategoria, Html.GetEnumSelectList<Kategoria>(), new { @class = "combobox" })<br /><br />
 
             @Html.LabelFor(model => model.SzervizCiklus, new { @class = "labeltext" })<br />
-            @Html.TextBoxFor(model => model.SzervizCiklus, new { @class = "textbox", placeholder = "Írja be a szervízciklust..." })
-            @Html.ValidationMessageFor(model => model.SzervizCiklus, "", new { @class = "text-danger" })<br /><br />
+            @Html.TextBoxFor(model => model.SzervizCiklus, new { @class = "textbox" })<br /><br />
 
             @Html.LabelFor(model => model.FutottKm, new { @class = "labeltext" })<br />
-            @Html.TextBoxFor(model => model.FutottKm, new { @class = "textbox", placeholder = "Írja be a futott kilométert..." })
-            @Html.ValidationMessageFor(model => model.FutottKm, "", new { @class = "text-danger" })<br /><br />
+            @Html.TextBoxFor(model => model.FutottKm, new { @class = "textbox" })<br /><br />
 
             @Html.LabelFor(model => model.UtolsoSzerviz, new { @class = "labeltext" })<br />
-            @Html.TextBoxFor(model => model.UtolsoSzerviz, new { @type = "date", @class = "textbox" })
-            @Html.ValidationMessageFor(model => model.UtolsoSzerviz, "", new { @class = "text-danger" })<br /><br />
+            @Html.TextBoxFor(model => model.UtolsoSzerviz, new { @type = "date", @class = "textbox" })<br /><br />
 
             @Html.LabelFor(model => model.SelectedTelephelyCim, new { @class = "labeltext" })<br />
-            @Html.DropDownListFor(model => model.SelectedTelephelyCim, new SelectList(Model.Telephelyek, "Value", "Text"), new { @class = "combobox" })
-            @Html.ValidationMessageFor(model => model.SelectedTelephelyCim, "", new { @class = "text-danger" })<br /><br />
+            @Html.DropDownListFor(model => model.SelectedTelephelyCim, new SelectList(Model.Telephelyek, "Value", "Text"), new { @class = "combobox" })<br /><br />
 
             <input type="submit" name="Save" value="Mentés" class="btn-submit" /><br />
         }

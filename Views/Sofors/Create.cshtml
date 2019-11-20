@@ -8,6 +8,8 @@
     <div class="body-context">
         @using (Html.BeginForm("Create", "Sofors", FormMethod.Post))
         {
+            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
             @Html.LabelFor(model => model.Csaladnev, new { @class = "labeltext" })<br />
             @Html.TextBoxFor(model => model.Csaladnev, new { @class = "textbox", placeholder = "Írja be a családnevet..." })<br /><br />
 
@@ -21,7 +23,7 @@
             @Html.TextBoxFor(model => model.JogositvanySzam, new { @class = "textbox", placeholder = "Írja be a jogosítvány számát..." })<br /><br />
 
             @Html.LabelFor(model => model.Ervenyesseg, new { @class = "labeltext" })<br />
-            @Html.TextBoxFor(model => model.Ervenyesseg, new { @type="date", @class = "textbox" })<br /><br />
+            @Html.TextBoxFor(model => model.Ervenyesseg, new { @type = "date", @class = "textbox" })<br /><br />
 
             @Html.LabelFor(model => model.Kategoria, new { @class = "labeltext" })<br />
             @Html.DropDownListFor(model => model.Kategoria, Html.GetEnumSelectList<Kategoria>(), new { @class = "combobox" })<br /><br />
@@ -31,3 +33,7 @@
         <div style="text-align: right;">@Html.ActionLink("Vissza a listához", "Index", "Sofors")</div>
     </div>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

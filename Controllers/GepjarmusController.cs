@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -139,36 +138,41 @@ namespace WebDiszpecser.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, [Bind("GepjarmuID,Tipus,Rendszam,FutottKm,SzervizCiklus,UtolsoSzerviz,Kategoria,SelectedTelephelyCim")] GepjarmuCreateViewModel gepjarmu)
         {
-            var temp = _context.Gepjarmuvek.Find(id);
-            if (temp == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
-            }
-            temp.Tipus = gepjarmu.Tipus;
-            temp.Rendszam = gepjarmu.Rendszam;
-            temp.Kategoria = gepjarmu.Kategoria;
-            temp.FutottKm = gepjarmu.FutottKm;
-            temp.UtolsoSzerviz = DateTime.Parse(gepjarmu.UtolsoSzerviz);
-            temp.SzervizCiklus = gepjarmu.SzervizCiklus;
-            temp.TelephelyID = int.Parse(gepjarmu.SelectedTelephelyCim);
-            temp.Telephely = _context.Telephelyek.Find(int.Parse(gepjarmu.SelectedTelephelyCim));
-            try
-            {
-                _context.Update(temp);
-                _context.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GepjarmuExists(gepjarmu.GepjarmuID))
+                var temp = _context.Gepjarmuvek.Find(id);
+                if (temp == null)
                 {
                     return NotFound();
                 }
-                else
+                temp.Tipus = gepjarmu.Tipus;
+                temp.Rendszam = gepjarmu.Rendszam;
+                temp.Kategoria = gepjarmu.Kategoria;
+                temp.FutottKm = gepjarmu.FutottKm;
+                temp.UtolsoSzerviz = DateTime.Parse(gepjarmu.UtolsoSzerviz);
+                temp.SzervizCiklus = gepjarmu.SzervizCiklus;
+                temp.TelephelyID = int.Parse(gepjarmu.SelectedTelephelyCim);
+                temp.Telephely = _context.Telephelyek.Find(int.Parse(gepjarmu.SelectedTelephelyCim));
+                try
                 {
-                    throw;
+                    _context.Update(temp);
+                    _context.SaveChanges();
                 }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!GepjarmuExists(gepjarmu.GepjarmuID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Index", "Gepjarmus");
             }
-            return RedirectToAction("Index", "Gepjarmus");
+            gepjarmu.Telephelyek = GetTelephelyek();
+            return View(gepjarmu);
         }
 
         // GET: Gepjarmus/Delete/5

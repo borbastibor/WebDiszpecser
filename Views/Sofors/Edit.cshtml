@@ -8,6 +8,8 @@
     <div class="body-context">
         @using (Html.BeginForm("Edit", "Sofors", FormMethod.Post))
         {
+            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
             @Html.LabelFor(model => model.Csaladnev, new { @class = "labeltext" })<br />
             @Html.TextBoxFor(model => model.Csaladnev, new { @class = "textbox" })<br /><br />
 
@@ -33,3 +35,7 @@
         <div style="text-align: right;">@Html.ActionLink("Vissza a listához", "Index", "Sofors")</div>
     </div>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -11,23 +11,16 @@ namespace WebDiszpecser.Models
         [Key]
         public int GepjarmuID { get; set; }
 
-        [Required]
         public string Tipus { get; set; }
 
-        [Required]
-        [StringLength(6)]
         public string Rendszam { get; set; }
 
-        [Required]
         public int FutottKm { get; set; }
 
-        [Required]
         public int SzervizCiklus { get; set; }
 
-        [Required]
         public DateTime UtolsoSzerviz { get; set; }
 
-        [Required]
         public Kategoria? Kategoria { get; set; }
 
         public int TelephelyID { get; set; }
