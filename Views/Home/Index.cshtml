@@ -1,11 +1,12 @@
 ﻿@model IndexViewModel
 @{
-    ViewData["Title"] = "Főoldal";
+    ViewData["Title"] = "WebDiszpécser - Főoldal";
 }
 
 <div class="body-container">
     <div class="body-title">@ViewData["Title"]</div>
     <div class="body-context">
+        <p><strong>Statisztika:</strong></p>
         <strong>Mai napig végrehajtott fuvarok száma:</strong> @Model.BefejezettFuvarok db<br />
         <strong>Végrehajtott és tervezett fuvarok száma:</strong> @Model.OsszesFuvar db<br />
         <strong>Alkalmazásban lévő sofőrök létszáma:</strong> @Model.SoforLetszam fő<br />
