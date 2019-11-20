@@ -84,20 +84,25 @@ namespace WebDiszpecser.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(GepjarmuCreateViewModel gepjarmu)
         {
-            Gepjarmu temp = new Gepjarmu
+            if (ModelState.IsValid)
             {
-                Tipus = gepjarmu.Tipus,
-                Rendszam = gepjarmu.Rendszam,
-                FutottKm = gepjarmu.FutottKm,
-                Kategoria = gepjarmu.Kategoria,
-                SzervizCiklus = gepjarmu.SzervizCiklus,
-                UtolsoSzerviz = DateTime.Parse(gepjarmu.UtolsoSzerviz),
-                TelephelyID = int.Parse(gepjarmu.SelectedTelephelyCim),
-                Telephely = _context.Telephelyek.Find(int.Parse(gepjarmu.SelectedTelephelyCim))
-            };
-            _context.Gepjarmuvek.Add(temp);
-            _context.SaveChanges();
-            return RedirectToAction("Index", "Gepjarmus");
+                Gepjarmu temp = new Gepjarmu
+                {
+                    Tipus = gepjarmu.Tipus,
+                    Rendszam = gepjarmu.Rendszam,
+                    FutottKm = gepjarmu.FutottKm,
+                    Kategoria = gepjarmu.Kategoria,
+                    SzervizCiklus = gepjarmu.SzervizCiklus,
+                    UtolsoSzerviz = DateTime.Parse(gepjarmu.UtolsoSzerviz),
+                    TelephelyID = int.Parse(gepjarmu.SelectedTelephelyCim),
+                    Telephely = _context.Telephelyek.Find(int.Parse(gepjarmu.SelectedTelephelyCim))
+                };
+                _context.Gepjarmuvek.Add(temp);
+                _context.SaveChanges();
+                return RedirectToAction("Index", "Gepjarmus");
+            }
+            gepjarmu.Telephelyek = GetTelephelyek();
+            return View(gepjarmu);
         }
 
         // GET: Gepjarmus/Edit/5
@@ -221,12 +226,6 @@ namespace WebDiszpecser.Controllers
                             Value = n.TelephelyID.ToString(),
                             Text = n.TelephelyCim
                         }).ToList();
-            var telephelyektip = new SelectListItem()
-            {
-                Value = null,
-                Text = "--- Válassz telephelyet ---"
-            };
-            telephelyek.Insert(0, telephelyektip);
             return new SelectList(telephelyek, "Value", "Text");
         }
     }
