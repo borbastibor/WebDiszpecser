@@ -92,20 +92,26 @@ namespace WebDiszpecser.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(FuvarCreateViewModel ujfuvar)
         {
-            Fuvar temp = new Fuvar
+            if (ModelState.IsValid)
             {
-                Feladat = ujfuvar.Feladat,
-                BerakoCim = ujfuvar.BerakoCim,
-                KirakoCim = ujfuvar.KirakoCim,
-                IndulasIdeje = DateTime.Parse(ujfuvar.IndulasIdeje),
-                GepjarmuID = int.Parse(ujfuvar.SelectedGepjarmu),
-                Gepjarmu = _context.Gepjarmuvek.Find(int.Parse(ujfuvar.SelectedGepjarmu)),
-                SoforID = int.Parse(ujfuvar.SelectedSofor),
-                Sofor = _context.Soforok.Find(int.Parse(ujfuvar.SelectedSofor))
-            };
-            _context.Fuvarok.Add(temp);
-            _context.SaveChanges();
-            return RedirectToAction("Index", "Fuvars");
+                Fuvar temp = new Fuvar
+                {
+                    Feladat = ujfuvar.Feladat,
+                    BerakoCim = ujfuvar.BerakoCim,
+                    KirakoCim = ujfuvar.KirakoCim,
+                    IndulasIdeje = DateTime.Parse(ujfuvar.IndulasIdeje),
+                    GepjarmuID = int.Parse(ujfuvar.SelectedGepjarmu),
+                    Gepjarmu = _context.Gepjarmuvek.Find(int.Parse(ujfuvar.SelectedGepjarmu)),
+                    SoforID = int.Parse(ujfuvar.SelectedSofor),
+                    Sofor = _context.Soforok.Find(int.Parse(ujfuvar.SelectedSofor))
+                };
+                _context.Fuvarok.Add(temp);
+                _context.SaveChanges();
+                return RedirectToAction("Index", "Fuvars");
+            }
+            ujfuvar.GepjarmuList = GetGepjarmuvek();
+            ujfuvar.SoforList = GetSoforok();
+            return View(ujfuvar);
         }
 
         // GET: Fuvars/Edit/5
@@ -135,37 +141,43 @@ namespace WebDiszpecser.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, [Bind("FuvarID,Feladat,IndulasIdeje,BerakoCim,KirakoCim,SelectedGepjarmu,SelectedSofor")]FuvarCreateViewModel fuvar)
         {
-            var actualfuvar = _context.Fuvarok.Find(id);
-            if (actualfuvar == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
-            }
-            actualfuvar.Feladat = fuvar.Feladat;
-            actualfuvar.BerakoCim = fuvar.BerakoCim;
-            actualfuvar.KirakoCim = fuvar.KirakoCim;
-            actualfuvar.IndulasIdeje = DateTime.Parse(fuvar.IndulasIdeje);
-            actualfuvar.GepjarmuID = int.Parse(fuvar.SelectedGepjarmu);
-            actualfuvar.Gepjarmu = _context.Gepjarmuvek.Find(int.Parse(fuvar.SelectedGepjarmu));
-            actualfuvar.SoforID = int.Parse(fuvar.SelectedSofor);
-            actualfuvar.Sofor = _context.Soforok.Find(int.Parse(fuvar.SelectedSofor));
-
-            try
-            {
-                _context.Update(actualfuvar);
-                _context.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!FuvarExists(actualfuvar.FuvarID))
+                var actualfuvar = _context.Fuvarok.Find(id);
+                if (actualfuvar == null)
                 {
                     return NotFound();
                 }
-                else
+                actualfuvar.Feladat = fuvar.Feladat;
+                actualfuvar.BerakoCim = fuvar.BerakoCim;
+                actualfuvar.KirakoCim = fuvar.KirakoCim;
+                actualfuvar.IndulasIdeje = DateTime.Parse(fuvar.IndulasIdeje);
+                actualfuvar.GepjarmuID = int.Parse(fuvar.SelectedGepjarmu);
+                actualfuvar.Gepjarmu = _context.Gepjarmuvek.Find(int.Parse(fuvar.SelectedGepjarmu));
+                actualfuvar.SoforID = int.Parse(fuvar.SelectedSofor);
+                actualfuvar.Sofor = _context.Soforok.Find(int.Parse(fuvar.SelectedSofor));
+
+                try
                 {
-                    throw;
+                    _context.Update(actualfuvar);
+                    _context.SaveChanges();
                 }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!FuvarExists(actualfuvar.FuvarID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Index", "Fuvars");
             }
-            return RedirectToAction("Index", "Fuvars");
+            fuvar.SoforList = GetSoforok();
+            fuvar.GepjarmuList = GetGepjarmuvek();
+            return View(fuvar);
         }
 
         // GET: Fuvars/Delete/5
@@ -230,12 +242,6 @@ namespace WebDiszpecser.Controllers
                             Value = n.GepjarmuID.ToString(),
                             Text = n.Tipus + " (" + n.Rendszam + ") - " + n.Kategoria.ToString()
                         }).ToList();
-            var gepjarmuvektip = new SelectListItem()
-            {
-                Value = null,
-                Text = "--- Válassz gépjárművet ---"
-            };
-            gepjarmuvek.Insert(0, gepjarmuvektip);
             return new SelectList(gepjarmuvek, "Value", "Text");
         }
 
@@ -249,12 +255,6 @@ namespace WebDiszpecser.Controllers
                             Value = n.SoforID.ToString(),
                             Text = n.Csaladnev + " " + n.Keresztnev + " (" + n.Kategoria.ToString() + ")"
                         }).ToList();
-            var sofortip = new SelectListItem()
-            {
-                Value = null,
-                Text = "--- Válassz sofőrt ---"
-            };
-            soforok.Insert(0, sofortip);
             return new SelectList(soforok, "Value", "Text").AsEnumerable();
         }
 

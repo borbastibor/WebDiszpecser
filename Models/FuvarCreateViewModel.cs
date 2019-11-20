@@ -9,19 +9,19 @@ namespace WebDiszpecser.Models
     {
         public int FuvarID { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Nincs megadva a szállítási feladat!")]
         [DisplayName("Szállítási feladat")]
         public string Feladat { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Nincs megadva a fuvar dátuma!")]
         [DisplayName("Fuvar ideje")]
         public string IndulasIdeje { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Nincs megadva a berakás címe!")]
         [DisplayName("Berakó címe")]
         public string BerakoCim { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Nincs megadva a kirakás címe!")]
         [DisplayName("Kirakó címe")]
         public string KirakoCim { get; set; }
 

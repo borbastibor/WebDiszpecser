@@ -7,12 +7,10 @@ namespace WebDiszpecser.Models
     {
         public int SoforID { get; set; }
 
-        [RegularExpression(@"^[\p{L}']$", ErrorMessage = "A családnévben ne használjon számokat és speciális karaktereket!")]
         [Required(ErrorMessage = "Nincs megadva a családnév!")]
         [DisplayName("Családnév")]
         public string Csaladnev { get; set; }
 
-        [RegularExpression(@"^[\p{L}']$", ErrorMessage = "A keresztnévben ne használjon számokat és speciális karaktereket!")]
         [Required(ErrorMessage = "Nincs megadva a keresztnév!")]
         [DisplayName("Keresztnév")]
         public string Keresztnev { get; set; }

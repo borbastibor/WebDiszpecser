@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -48,11 +49,20 @@ namespace WebDiszpecser.Controllers
         // POST: Sofors/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("SoforID,Csaladnev,Keresztnev,SzulIdo,JogositvanySzam,Ervenyesseg,Kategoria")] Sofor sofor)
+        public IActionResult Create(SoforCreateViewModel sofor)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(sofor);
+                Sofor soformodel = new Sofor
+                {
+                    Csaladnev = sofor.Csaladnev,
+                    Keresztnev = sofor.Keresztnev,
+                    SzulIdo = DateTime.Parse(sofor.SzulIdo),
+                    JogositvanySzam = sofor.JogositvanySzam,
+                    Ervenyesseg = DateTime.Parse(sofor.Ervenyesseg),
+                    Kategoria = sofor.Kategoria
+                };
+                _context.Add(soformodel);
                 _context.SaveChanges();
                 return RedirectToAction("Index", "Sofors");
             }
@@ -88,7 +98,7 @@ namespace WebDiszpecser.Controllers
         // POST: Sofors/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("SoforID,Csaladnev,Keresztnev,SzulIdo,JogositvanySzam,Ervenyesseg,Kategoria")] Sofor sofor)
+        public IActionResult Edit(int id, SoforCreateViewModel sofor)
         {
             if (id != sofor.SoforID)
             {
@@ -97,14 +107,23 @@ namespace WebDiszpecser.Controllers
 
             if (ModelState.IsValid)
             {
+                Sofor soformodel = new Sofor
+                {
+                    Csaladnev = sofor.Csaladnev,
+                    Keresztnev = sofor.Keresztnev,
+                    SzulIdo = DateTime.Parse(sofor.SzulIdo),
+                    JogositvanySzam = sofor.JogositvanySzam,
+                    Ervenyesseg = DateTime.Parse(sofor.Ervenyesseg),
+                    Kategoria = sofor.Kategoria
+                };
                 try
                 {
-                    _context.Update(sofor);
+                    _context.Update(soformodel);
                     _context.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SoforExists(sofor.SoforID))
+                    if (!SoforExists(soformodel.SoforID))
                     {
                         return NotFound();
                     }
